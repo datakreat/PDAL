@@ -1,0 +1,11 @@
+from equations.friis import FRIIS_METADATA,FRIIS_INVERSE_METADATA
+from equations.noise import NOISE_METADATA
+from equations.snr import SNR_METADATA
+
+
+EQUATION_REGISTRY = [
+    FRIIS_METADATA,
+    NOISE_METADATA,
+    FRIIS_INVERSE_METADATA,
+    SNR_METADATA
+]
