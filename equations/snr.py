@@ -14,5 +14,10 @@ SNR_METADATA = {
     "name": "snr",
     "inputs": ["Pr", "N"],
     "outputs": ["SNR"],
-    "equation": snr_equation
+    "equation": snr_equation,
+    "symbol_map": {
+        "Pr": Pr,
+        "N": N,
+        "SNR": SNR
+    }
 }
