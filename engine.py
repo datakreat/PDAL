@@ -167,6 +167,32 @@ def validate_pdal(text: str) -> dict:
     target = extracted.get("target")
     extracted_params = extracted.get("parameters", {})
 
+    # Normalize extracted_params values to be dicts {"value": ..., "unit": ...}
+    normalized_params = {}
+    for k, v in extracted_params.items():
+        if isinstance(v, dict):
+            val = v.get("value")
+            unit = v.get("unit") or v.get("units") or ""
+        elif isinstance(v, (int, float)):
+            val = v
+            unit = ""
+        elif isinstance(v, str):
+            match = re.match(r"^\s*([+-]?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\s*(.*)$", v.strip())
+            if match:
+                try:
+                    val = float(match.group(1)) if "." in match.group(1) or "e" in match.group(1).lower() else int(match.group(1))
+                except Exception:
+                    val = match.group(1)
+                unit = match.group(2).strip()
+            else:
+                val = v
+                unit = ""
+        else:
+            val = v
+            unit = ""
+        normalized_params[k] = {"value": val, "unit": unit}
+    extracted_params = normalized_params
+
     if not family_name or family_name not in FAMILIES:
         print(f"\n❌ Unsupported or unrecognized physics family: '{family_name}'")
         reasoning = extracted.get("reasoning")

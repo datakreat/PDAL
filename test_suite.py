@@ -17,6 +17,8 @@ def run_test_case(name, query):
         results = engine.validate_pdal(query)
         output = sys.stdout.getvalue()
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         results = None
         output = f"EXCEPTION OCCURRED: {e}"
     finally:
