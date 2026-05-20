@@ -8,25 +8,26 @@ def run_test_case(name, query):
     print(f"Query: {query}")
     print(f"==========================================")
     
-    # Backup stdout and stdin
-    old_stdin = sys.stdin
     old_stdout = sys.stdout
     
-    # Mock stdin and capture stdout
-    sys.stdin = io.StringIO(query + "\n")
+    # Capture stdout
     sys.stdout = io.StringIO()
     
     try:
-        engine.main()
+        results = engine.validate_pdal(query)
         output = sys.stdout.getvalue()
     except Exception as e:
+        results = None
         output = f"EXCEPTION OCCURRED: {e}"
     finally:
-        # Restore stdin and stdout
-        sys.stdin = old_stdin
+        # Restore stdout
         sys.stdout = old_stdout
         
     print(output)
+    if results:
+        print("Returned Results dict:")
+        import pprint
+        pprint.pprint(results)
     return output
 
 def main():
