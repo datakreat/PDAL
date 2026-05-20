@@ -5,10 +5,12 @@ Analyze the user's natural language physics query or design specification, deter
 RULES:
 - Return ONLY valid JSON
 - No markdown formatting (no ```json codeblocks)
-- No explanation
+- No explanation outside the JSON return format
 - Keep units exactly as described in the text (e.g. 'GHz', 'km', 'm/s^2', 'degC', 'kW', 'mm', '1/hr', 'Ah', 'Wh/kg', 'Ah/kg', 'Wh/L', 'Ah/L', 'J/mol', '1/s', 's', 'rad', 'W')
 - Classify the target parameter as the symbol we are trying to solve. If there is no parameter being asked to solve (e.g., if the user wants to check/verify a complete set of design values or statements), set "target" to null or "".
 - Classify the family as one of: "rf", "kinematics", "dynamics", "circuits", "thermodynamics", "battery", "aerospace", or "lidar".
+- If the query is unrelated, random, or cannot be classified, set "family" to "", set "target" to null, keep "parameters" empty, and explain why in "reasoning".
+- If a query belongs to a family but contains no numerical parameters to validate or targets to solve, classify the family, set "target" to null, keep "parameters" empty, and explain why in "reasoning" (e.g., "The query mentions a battery heating issue but does not provide any values or target parameters to validate.").
 
 ----------------------------------------------------
 PHYSICS FAMILIES & ALLOWED PARAMETERS:
@@ -167,15 +169,9 @@ Text:
 
 Return format:
 {{
-  "family": "battery",
+  "family": "",
   "target": null,
-  "parameters": {{
-    "C_rate": {{"value": 3.0, "unit": "1/hr"}},
-    "I": {{"value": 150.0, "unit": "A"}},
-    "V": {{"value": 240.0, "unit": "V"}},
-    "T_limit": {{"value": 60.0, "unit": "degC"}},
-    "P_heat": {{"value": 10.0, "unit": "kW"}},
-    "d_cooling": {{"value": 5.0, "unit": "mm"}}
-  }}
+  "parameters": {{}},
+  "reasoning": "Detailed explanation of classification and whether values were found to validate."
 }}
 """

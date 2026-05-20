@@ -27,12 +27,26 @@ def main():
     # =====================================================
     extracted = extract_parameters(text)
 
+    if not extracted or not isinstance(extracted, dict):
+        print("\n❌ Extraction parsing failed. No valid physics parameters could be extracted.")
+        return
+
     family_name = extracted.get("family")
     target = extracted.get("target")
     extracted_params = extracted.get("parameters", {})
 
     if not family_name or family_name not in FAMILIES:
         print(f"\n❌ Unsupported or unrecognized physics family: '{family_name}'")
+        reasoning = extracted.get("reasoning")
+        if reasoning:
+            print(f"Reason: {reasoning}")
+        return
+
+    if not extracted_params:
+        print("\nℹ️ Nothing to validate: No parameter values found in the query.")
+        reasoning = extracted.get("reasoning")
+        if reasoning:
+            print(f"Reason: {reasoning}")
         return
 
     family = FAMILIES[family_name]

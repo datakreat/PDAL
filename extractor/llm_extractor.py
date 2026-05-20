@@ -24,8 +24,24 @@ def extract_parameters(text):
 
     try:
         parsed = json.loads(cleaned)
+        if not isinstance(parsed, dict):
+            parsed = {}
+        # Ensure all key fields exist
+        if "family" not in parsed:
+            parsed["family"] = ""
+        if "target" not in parsed:
+            parsed["target"] = None
+        if "parameters" not in parsed or not isinstance(parsed["parameters"], dict):
+            parsed["parameters"] = {}
+        if "reasoning" not in parsed:
+            parsed["reasoning"] = ""
         return parsed
 
     except Exception as e:
         print("Extraction parsing failed:", e)
-        return {"family": "rf", "target": "Pt", "parameters": {}}
+        return {
+            "family": "",
+            "target": None,
+            "parameters": {},
+            "reasoning": f"Failed to parse LLM response: {e}. Raw response: {raw}"
+        }
